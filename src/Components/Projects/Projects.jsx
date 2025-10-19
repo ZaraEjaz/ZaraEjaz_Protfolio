@@ -52,23 +52,49 @@ return (
                </div>
             </div>
          </div>
-
-
          <div className="project-box-wrapper" data-aos="fade-up">
             <div className="project-box project-box2" id="project-box2">
                <div className="info-div">
-                  <article className="ProjectHeading">Library Mangment System</article>
+                  <article className="ProjectHeading">TriTechTitan Website</article>
                   <p className="ProjectDescription">
-                     Developed in Java using Object-Oriented Programming principles, aimed at efficiently managing library resources and member activities.
+                    Designed & Developed the official TriTechTitan website. The project was built using React (Vite) and Typescript for fast performance and a modern development workflow, along with Tailwind CSS for styling and responsiveness.
                   </p>
                   <div className="project-buttons">
-                     <a href="https://github.com/ZaraEjaz/Library-Management-System" target="_blank" rel="noopener noreferrer" className="github-redirect" aria-label="Visit on GitHub">
-                     <img src="./svg/github.svg" alt="github redirect button" />
+                     <a href="https://tritechtitan.info/" target="_blank" className="cta"
+                        aria-label="TriTechTitan Live">
+                        <span>Live view</span>
+                        <svg viewBox="0 0 13 10" height="10px" width="15px">
+                           <path d="M1,5 L11,5"></path>
+                           <polyline points="8 1 12 5 8 9"></polyline>
+                        </svg>
                      </a>
                   </div>
                </div>
                <div className="image-div">
-                  <img src="./Images/LMS.png" alt="Pexelicon website preview image" />
+                  <img src="./Images/T3mainwebsite.png" alt="Pexelicon website preview image" />
+               </div>
+            </div>
+         </div>
+         <div className="project-box-wrapper" data-aos="fade-up">
+            <div className="project-box project-box2" id="project-box2">
+               <div className="info-div">
+                  <article className="ProjectHeading">TriTechTitan Blog</article>
+                  <p className="ProjectDescription">
+                  TriTechTitan is a modern WordPress-based tech blog sharing insights, tutorials, and trends in technology and innovation.
+                  </p>
+                  <div className="project-buttons">
+                     <a href="https://tritechtitan.blog/" target="_blank" className="cta"
+                        aria-label="TriTechTitan Live">
+                        <span>Live view</span>
+                        <svg viewBox="0 0 13 10" height="10px" width="15px">
+                           <path d="M1,5 L11,5"></path>
+                           <polyline points="8 1 12 5 8 9"></polyline>
+                        </svg>
+                     </a>
+                  </div>
+               </div>
+               <div className="image-div">
+                  <img src="./Images/T3blog.png" alt="Pexelicon website preview image" />
                </div>
             </div>
          </div>
