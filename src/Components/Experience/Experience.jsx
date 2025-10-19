@@ -22,10 +22,14 @@ const experiences = [
     role: "Software Engineer",
     duration: "April - August 2025",
     description: "Developed scalable web applications, contributed to both frontend and backend, and collaborated with cross-functional teams."
+  },
+  {
+    company: "TriTechTitan (Remote)",
+    role: "Software Engineer",
+    duration: "October - Still Working",
+    description: "Developing scalable web applications, contributing to both frontend and backend."
   }
 ];
-
-  
 
 const Experience = () => {
   useEffect(() => {
