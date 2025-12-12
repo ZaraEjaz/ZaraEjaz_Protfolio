@@ -12,6 +12,14 @@ const projectsData = [
     liveLink: "https://quantaflix.com/",
     githubLink: null
   },
+{
+    title: "The Research Professionals",
+    description: "A professional portfolio website developed for a client to showcase their research services and expertise. The site features a clean, modern design ensuring responsiveness and a seamless user experience for potential clients.",
+    image: "./Images/research_pros.png", // NOTE: Add your screenshot here
+    boxClass: "project-box2", 
+    liveLink: "https://www.theresearchprofessionals.site/",
+    githubLink: null
+  },
   {
     title: "My Portfolio",
     description: "My portfolio website is developed using React with Vite for a fast and efficient build process, styled with modern CSS frameworks and custom animations to ensure responsiveness, interactivity, and a seamless user experience.",
