@@ -45,12 +45,12 @@ const projectsData = [
     githubLink: null
   },
   {
-    title: "CPU SCHEDULING SIMULATOR",
-    description: "Web app using JavaScript, HTML, and CSS to simulate CPU scheduling and page replacement algorithms, providing visualization and performance metrics.",
-    image: "./Images/CPUS.jpg",
-    boxClass: "project-box5",
-    liveLink: null,
-    githubLink: "https://github.com/ZaraEjaz/CPU-SCHEDULAR"
+    title: "Web Developer Portfolio",
+    description: "A custom-built professional portfolio for a Web Developer, showcasing skills, projects, and expertise. Developed using React and Vite, the site features a sleek, modern UI, smooth scrolling, and high-performance optimizations for a seamless user experience.",
+    image: "./Images/talha_portfolio.png", 
+    boxClass: "project-box2",
+    liveLink: "https://talha-portfolio-wheat.vercel.app/",
+    githubLink: null
   },
   {
     title: "Algorithm Visualizer",
