@@ -12,6 +12,14 @@ const projectsData = [
     liveLink: "https://quantaflix.com/",
     githubLink: null
   },
+    {
+    title: "Web Developer Portfolio",
+    description: "A custom-built professional portfolio for a Web Developer, showcasing skills, projects, and expertise. Developed using React and Vite, the site features a sleek, modern UI, smooth scrolling, and high-performance optimizations for a seamless user experience.",
+    image: "./Images/talha_portfolio.png", 
+    boxClass: "project-box2",
+    liveLink: "https://talha-portfolio-wheat.vercel.app/",
+    githubLink: null
+  },
 {
     title: "The Research Professionals",
     description: "A professional portfolio website developed for a client to showcase their research services and expertise. The site features a clean, modern design ensuring responsiveness and a seamless user experience for potential clients.",
@@ -42,14 +50,6 @@ const projectsData = [
     image: "./Images/T3blog.png",
     boxClass: "project-box2",
     liveLink: "https://tritechtitan.blog/",
-    githubLink: null
-  },
-  {
-    title: "Web Developer Portfolio",
-    description: "A custom-built professional portfolio for a Web Developer, showcasing skills, projects, and expertise. Developed using React and Vite, the site features a sleek, modern UI, smooth scrolling, and high-performance optimizations for a seamless user experience.",
-    image: "./Images/talha_portfolio.png", 
-    boxClass: "project-box2",
-    liveLink: "https://talha-portfolio-wheat.vercel.app/",
     githubLink: null
   },
   {
