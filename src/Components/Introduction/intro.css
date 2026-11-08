@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:700');
 
 /* Hello Intro */
-p {
+.legacy p {
   font-size: 1.28rem;
   text-transform: uppercase;
   color: #e5e5e5;
@@ -13,7 +13,7 @@ p {
   text-align: justify;
 }
 
-h1 {
+.legacy h1 {
   opacity: 0;
   transform: translateX(-100px);
   animation: fadeInFromLeft 1s 0.2s forwards;

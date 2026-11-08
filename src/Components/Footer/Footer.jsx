@@ -1,8 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Footer.css';
-import Media from '../Media/Media';
-import emailjs from 'emailjs-com';
 const Footer = () => {
   return (
     <>

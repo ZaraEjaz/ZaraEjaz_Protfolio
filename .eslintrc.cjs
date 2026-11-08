@@ -13,9 +13,15 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     'react/jsx-no-target-blank': 'off',
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
+    // Plain JS project — no runtime prop-types.
+    'react/prop-types': 'off',
+    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
   },
+  overrides: [
+    {
+      // React Three Fiber elements take three.js props (args, attach, geometry…).
+      files: ['src/sections/**/NodeGraph.jsx', 'src/**/*Scene*.jsx'],
+      rules: { 'react/no-unknown-property': 'off' },
+    },
+  ],
 }
