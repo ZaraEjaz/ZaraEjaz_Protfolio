@@ -46,6 +46,33 @@ export default function Cursor() {
       shown = false;
       root.classList.remove('cursor-visible');
     };
+    // labels coming from the 3D scene (skill blocks, monitors)
+    const onLabel = (e) => {
+      label.current.textContent = e.detail || '';
+      root.classList.toggle('cursor-label', !!e.detail);
+      root.classList.toggle('cursor-hover', !!e.detail);
+    };
+    window.addEventListener('cursor:label', onLabel);
+
+    // which section is mid-screen → html[data-section] (per-section cursor styles in Cursor.css).
+    // Measured live on scroll, so pinned sections that add scroll length can't make it stale.
+    let raf = 0;
+    const trackSection = () => {
+      raf = 0;
+      const line = window.innerHeight * 0.55;
+      for (const el of document.querySelectorAll('section[data-section]')) {
+        const r = el.getBoundingClientRect();
+        if (r.top <= line && r.bottom > line) {
+          root.dataset.section = el.dataset.section;
+          return;
+        }
+      }
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(trackSection);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    trackSection();
     const down = () => root.classList.add('cursor-down');
     const up = () => root.classList.remove('cursor-down');
 
@@ -60,6 +87,10 @@ export default function Cursor() {
       document.documentElement.removeEventListener('pointerleave', leave);
       window.removeEventListener('pointerdown', down);
       window.removeEventListener('pointerup', up);
+      window.removeEventListener('cursor:label', onLabel);
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+      delete root.dataset.section;
       root.classList.remove('has-cursor', 'cursor-visible', 'cursor-hover', 'cursor-label', 'cursor-down');
     };
   }, [fine, reduced]);

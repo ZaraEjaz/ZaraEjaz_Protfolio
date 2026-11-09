@@ -71,11 +71,18 @@ body::after {
 
 /* ---------- shared primitives ---------- */
 
-.shell {
+/* one container for everything (nav included) so edges line up */
+.shell,
+.container {
   width: 100%;
-  max-width: var(--max);
+  max-width: calc(var(--container) + var(--gutter) * 2);
   margin-inline: auto;
   padding-inline: var(--gutter);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
 }
 
 .mono {
@@ -113,9 +120,17 @@ body::after {
   }
 }
 
+/* gradient text (hero name highlight) */
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 /* Buttons */
 .btn {
-  --btn-pad: 0.95rem 1.4rem;
+  --btn-pad: 0.8rem 1.2rem;
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
@@ -136,8 +151,11 @@ body::after {
     color 0.35s var(--ease-out);
 }
 .btn:hover {
-  border-color: var(--fg-2);
+  border-color: transparent;
   color: var(--fg);
+  background:
+    linear-gradient(var(--teal), var(--teal)) padding-box,
+    var(--grad) border-box;
 }
 .btn .btn-icon {
   display: inline-block;
@@ -147,14 +165,23 @@ body::after {
   transform: translateX(4px);
 }
 .btn[data-variant='primary'] {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--grad-warm);
+  background-size: 160% 100%;
+  background-position: 0% 0;
+  border-color: transparent;
   color: var(--accent-ink);
+  transition:
+    background-position 0.6s var(--ease-out),
+    box-shadow 0.5s var(--ease-out),
+    color 0.35s var(--ease-out);
 }
 .btn[data-variant='primary']:hover {
-  background: #d6ff70;
-  border-color: #d6ff70;
+  background-position: 100% 0;
+  border-color: transparent;
   color: var(--accent-ink);
+  box-shadow:
+    0 10px 30px -10px rgba(var(--accent-2-rgb), 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
 }
 .btn[data-icon-dir='down']:hover .btn-icon {
   transform: translateY(3px);
@@ -173,8 +200,22 @@ body::after {
   }
 }
 
-/* ---------- legacy sections (until each is redesigned) ---------- */
-.legacy {
-  position: relative;
-  z-index: 1;
+
+.btn--sm {
+  --btn-pad: 0.45rem 0.85rem;
+  font-size: var(--text-xs);
+}
+
+.link {
+  color: var(--fg-2);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 1px;
+  transition:
+    color 0.3s,
+    border-color 0.3s;
+}
+.link:hover {
+  color: var(--accent-2);
+  border-color: var(--accent-2);
 }

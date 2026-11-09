@@ -20,7 +20,7 @@ module.exports = {
   overrides: [
     {
       // React Three Fiber elements take three.js props (args, attach, geometry…).
-      files: ['src/sections/**/NodeGraph.jsx', 'src/**/*Scene*.jsx'],
+      files: ['src/three/**/*.jsx'],
       rules: { 'react/no-unknown-property': 'off' },
     },
   ],

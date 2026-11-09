@@ -1,18 +1,23 @@
 import { useCallback, useEffect, useState } from 'react';
-// Legacy styles: removed once every old section below has been redesigned.
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Intro from './Components/Introduction/Intro';
-import Skills from './Components/Skills/Skills';
-import Experience from './Components/Experience/Experience';
-import Projects from './Components/Projects/Projects';
-import Footer from './Components/Footer/Footer';
-
 import Loader from './ui/Loader';
 import Cursor from './ui/Cursor';
 import Nav from './ui/Nav';
-import Hero from './sections/Hero/Hero';
+import Hero from './sections/Hero';
+import About from './sections/About';
+import Skills from './sections/Skills';
+import Journey from './sections/Journey';
+import Projects from './sections/Projects';
+import Contact from './sections/Contact';
 import { startSmoothScroll } from './lib/scroll';
+import { initReveals } from './lib/reveals';
+import { initSpotlight } from './lib/spotlight';
+import Marquee from './ui/Marquee';
+import { skills } from './content';
 import { useReducedMotion } from './hooks/useMediaQuery';
+import './sections/sections.css';
+
+// one marquee: every CV skill, once (Skills shows them grouped)
+const MARQUEE = [...new Set(skills.flatMap((g) => g.items))];
 
 export default function App() {
   const [booted, setBooted] = useState(false);
@@ -24,6 +29,9 @@ export default function App() {
     return startSmoothScroll();
   }, [reduced]);
 
+  useEffect(() => initReveals(), []);
+  useEffect(() => initSpotlight(), []);
+
   return (
     <>
       <Loader onDone={onBooted} />
@@ -31,25 +39,13 @@ export default function App() {
       <Nav />
       <main>
         <Hero ready={booted} />
-
-        <div className="legacy">
-          <div id="about" className="container Introduction">
-            <Intro />
-          </div>
-          <div id="skills" className="Skills container">
-            <Skills />
-          </div>
-          <div id="experience" className="Skills container">
-            <Experience />
-          </div>
-          <div id="work" className="container">
-            <Projects />
-          </div>
-        </div>
+        <Marquee items={MARQUEE} speed={70} label="Skills" />
+        <About />
+        <Skills />
+        <Journey />
+        <Projects />
+        <Contact />
       </main>
-      <div id="contact" className="legacy">
-        <Footer />
-      </div>
     </>
   );
 }

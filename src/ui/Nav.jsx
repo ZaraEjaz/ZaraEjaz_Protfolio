@@ -90,7 +90,7 @@ export default function Nav() {
             </a>
           ))}
         </nav>
-        <p className="mono">PKT {time} — local time, usually awake</p>
+        <p className="mono">PKT {time} — local time</p>
       </div>
     </header>
   );

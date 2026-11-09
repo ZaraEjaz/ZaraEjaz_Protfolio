@@ -31,7 +31,7 @@ html.cursor-visible .cursor-ring {
   height: 36px;
   margin: -18px 0 0 -18px;
   border-radius: 50%;
-  border: 1px solid rgba(237, 237, 240, 0.35);
+  border: 1px solid rgba(209, 232, 226, 0.4);
   display: grid;
   place-items: center;
   transition:
@@ -47,18 +47,18 @@ html.cursor-hover .cursor-ring {
   width: 56px;
   height: 56px;
   margin: -28px 0 0 -28px;
-  border-color: var(--accent);
-  background: var(--accent-dim);
+  border-color: var(--accent-2);
+  background: var(--accent-2-dim);
 }
 html.cursor-hover .cursor-dot {
   opacity: 0;
 }
 html.cursor-label .cursor-ring {
-  width: 84px;
-  height: 84px;
-  margin: -42px 0 0 -42px;
-  background: var(--accent);
-  border-color: var(--accent);
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  background: var(--grad-warm);
+  border-color: transparent;
 }
 html.cursor-down .cursor-ring {
   width: 28px;
@@ -76,4 +76,29 @@ html.cursor-down .cursor-ring {
 }
 html.cursor-label .cursor-text {
   opacity: 1;
+}
+
+/* ---- the cursor changes character per section (html[data-section] set in Cursor.jsx) ---- */
+.cursor-ring {
+  transition-property: opacity, width, height, margin, background-color, border-color, border-radius, rotate;
+}
+html[data-section='skills']:not(.cursor-label) .cursor-ring {
+  border-radius: 6px; /* a "module" */
+  rotate: 45deg;
+}
+html[data-section='experience']:not(.cursor-label) .cursor-ring {
+  border-style: dashed;
+  border-color: rgba(var(--accent-rgb), 0.55);
+}
+html[data-section='work']:not(.cursor-hover) .cursor-ring {
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border-color: rgba(var(--accent-rgb), 0.45);
+}
+html[data-section='contact'] .cursor-dot {
+  scale: 1.8;
+}
+html[data-section='contact']:not(.cursor-hover) .cursor-ring {
+  border-color: var(--accent);
 }

@@ -4,9 +4,9 @@ import './Loader.css';
 
 const LINES = [
   ['booting zara.os', ''],
-  ['mounting modules', 'ok'],
-  ['linking erp ↔ ai', 'ok'],
-  ['brewing chai', 'ok'],
+  ['reading resume.pdf', 'ok'],
+  ['mounting frontend + backend', 'ok'],
+  ['linking frappe ↔ erpnext', 'ok'],
 ];
 const KEY = 'ze-booted';
 

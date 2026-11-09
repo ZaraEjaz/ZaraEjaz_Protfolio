@@ -35,7 +35,7 @@
 }
 
 .loader-ok {
-  color: var(--accent);
+  color: var(--accent-2);
 }
 
 .loader-bar {
@@ -47,7 +47,7 @@
 .loader-bar span {
   display: block;
   height: 100%;
-  background: var(--accent);
+  background: var(--grad);
   transform-origin: left;
   transition: transform 0.25s var(--ease-out);
 }

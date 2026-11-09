@@ -45,3 +45,19 @@ export function handleAnchor(e) {
 }
 
 export { gsap, ScrollTrigger };
+
+/** Pause / resume smooth scrolling (e.g. while a modal is open). */
+export function lockScroll() {
+  lenis?.stop();
+  document.documentElement.classList.add('scroll-locked');
+}
+export function unlockScroll() {
+  lenis?.start();
+  document.documentElement.classList.remove('scroll-locked');
+}
+
+/** Scroll to an absolute Y (smooth with Lenis when active). */
+export function scrollToY(y, immediate = false) {
+  if (lenis) lenis.scrollTo(y, { duration: immediate ? 0 : 1.2, immediate });
+  else window.scrollTo({ top: y, behavior: immediate ? 'auto' : 'smooth' });
+}
