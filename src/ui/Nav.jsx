@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { handleAnchor } from '../lib/scroll';
+import { useClock } from '../hooks/useClock';
 import './Nav.css';
 
 const NAV_LINKS = [
@@ -10,25 +11,26 @@ const NAV_LINKS = [
   { id: 'contact', label: 'contact' },
 ];
 
-const fmt = new Intl.DateTimeFormat('en-GB', {
-  timeZone: 'Asia/Karachi',
-  hour: '2-digit',
-  minute: '2-digit',
-});
-
-function useClock() {
-  const [now, setNow] = useState(() => fmt.format(new Date()));
-  useEffect(() => {
-    const id = setInterval(() => setNow(fmt.format(new Date())), 15000);
-    return () => clearInterval(id);
-  }, []);
-  return now;
-}
-
 export default function Nav() {
   const time = useClock();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  // the hero has its own top bar (name, status, menu); the fixed nav takes over once it scrolls away
+  const [onHero, setOnHero] = useState(true);
+
+  useEffect(() => {
+    const hero = document.getElementById('top');
+    if (!hero) return setOnHero(false);
+    const io = new IntersectionObserver(([e]) => setOnHero(e.intersectionRatio > 0.35), { threshold: [0, 0.35, 1] });
+    io.observe(hero);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const onToggle = () => setOpen((o) => !o);
+    window.addEventListener('nav:toggle', onToggle);
+    return () => window.removeEventListener('nav:toggle', onToggle);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -50,7 +52,7 @@ export default function Nav() {
   };
 
   return (
-    <header className={`nav ${scrolled ? 'is-scrolled' : ''} ${open ? 'is-open' : ''}`}>
+    <header className={`nav ${scrolled ? 'is-scrolled' : ''} ${open ? 'is-open' : ''} ${onHero && !open ? 'is-tucked' : ''}`} inert={onHero && !open ? '' : undefined}>
       <div className="nav-inner shell">
         <a href="#top" className="nav-logo" onClick={go}>
           <span aria-hidden="true">

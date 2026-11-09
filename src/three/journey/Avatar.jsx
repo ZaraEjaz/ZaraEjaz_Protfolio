@@ -43,6 +43,7 @@ const Avatar = forwardRef(function Avatar({ motion }, ref) {
   const skirt = useRef();
   const lShoe = useRef();
   const rShoe = useRef();
+  const seat = useRef();
 
   useFrame(({ clock }, delta) => {
     const m = motion.current;
@@ -52,7 +53,13 @@ const Avatar = forwardRef(function Avatar({ motion }, ref) {
     const w = m.walking ? 1 : 0;
 
     const pose = m.walking ? null : m.pose;
-    const sitY = pose === 'sit' ? -0.42 : 0;
+    const seated = pose === 'sit';
+    const sitY = seated ? -0.42 : 0;
+    // seated: swap the floor-length dress for a lap + shins so she reads as sitting on the chair
+    skirt.current.visible = !seated;
+    lShoe.current.visible = !seated;
+    rShoe.current.visible = !seated;
+    seat.current.visible = seated;
 
     // bob + sway while walking, gentle breathing at rest
     body.current.position.y += ((w ? Math.abs(Math.sin(step)) * 0.05 : sitY + Math.sin(t * 1.8) * 0.008) - body.current.position.y) * k;
@@ -104,6 +111,23 @@ const Avatar = forwardRef(function Avatar({ motion }, ref) {
           <mesh material={trim} position-y={0.02}>
             <torusGeometry args={[0.36, 0.012, 4, 8]} />
           </mesh>
+        </group>
+        {/* seated legs (shown instead of the dress while sitting): lap forward, shins down to the floor */}
+        <group ref={seat} visible={false}>
+          <mesh material={dress} position={[0, 0.74, 0.2]} rotation-x={Math.PI / 2} castShadow>
+            <cylinderGeometry args={[0.16, 0.19, 0.5, 8]} />
+          </mesh>
+          <mesh material={dress} position={[0, 0.54, 0.42]} castShadow>
+            <cylinderGeometry args={[0.16, 0.23, 0.4, 8]} />
+          </mesh>
+          <mesh material={trim} position={[0, 0.345, 0.42]} rotation-x={Math.PI / 2}>
+            <torusGeometry args={[0.23, 0.012, 4, 8]} />
+          </mesh>
+          {[0.09, -0.09].map((x) => (
+            <mesh key={x} material={shoe} position={[x, 0.37, 0.6]}>
+              <boxGeometry args={[0.12, 0.07, 0.14]} />
+            </mesh>
+          ))}
         </group>
         {/* torso */}
         <mesh material={dress} position-y={1.08} castShadow>

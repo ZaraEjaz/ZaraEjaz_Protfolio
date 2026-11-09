@@ -8,6 +8,9 @@ const UP = 1 / 45; // avg frame time to upgrade (≥ ~45 fps)
 const DOWN = 1 / 30; // avg frame time to downgrade (< ~30 fps)
 const MAX_FLIPS = 3; // then stay where we are
 
+// QA override: ?quality=high pins full quality (e.g. to review the glass on a machine without a GPU)
+const FORCED = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('quality') === 'high';
+
 /**
  * Progressive, adaptive quality for a canvas: starts cheap (DPR 1, 'low'), upgrades to `max` DPR and
  * 'high' once frames are consistently fast, and steps back down if they slow. Expensive extras
@@ -15,10 +18,10 @@ const MAX_FLIPS = 3; // then stay where we are
  */
 export default function Adaptive({ max = MAX_DPR, children = null }) {
   const setDpr = useThree((s) => s.setDpr);
-  const [quality, setQuality] = useState('low');
-  const s = useRef({ frames: 0, n: 0, sum: 0, level: 'low', flips: 0 });
+  const [quality, setQuality] = useState(FORCED ? 'high' : 'low');
+  const s = useRef({ frames: 0, n: 0, sum: 0, level: FORCED ? 'high' : 'low', flips: FORCED ? MAX_FLIPS : 0 });
 
-  useEffect(() => setDpr(1), [setDpr]);
+  useEffect(() => setDpr(FORCED ? Math.min(max, window.devicePixelRatio || 1) : 1), [setDpr, max]);
 
   useFrame((_, delta) => {
     const st = s.current;

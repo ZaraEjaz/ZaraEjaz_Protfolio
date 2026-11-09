@@ -6,7 +6,7 @@ import SceneBoundary from './SceneBoundary';
 
 const BlobScene = lazy(() => import('../three/BlobScene'));
 const ModuleAccent = lazy(() => import('../three/ModuleAccent'));
-const DeskScene = lazy(() => import('../three/desk/DeskScene'));
+const HeroScene = lazy(() => import('../three/hero/HeroScene'));
 
 /**
  * Waits until `after` is true, then `delay` ms, then an idle moment — so a heavy scene doesn't
@@ -50,8 +50,8 @@ export default function Lazy3D({ kind, variant, className = '', fallback = null,
         <SceneBoundary>
           <Suspense fallback={null}>
             <div className="lazy3d-canvas">
-              {kind === 'desk' ? (
-                <DeskScene active={visible} lite={tier === 'lite'} reduced={reduced} onReady={onReady} />
+              {kind === 'hero' ? (
+                <HeroScene active={visible} lite={tier === 'lite'} reduced={reduced} onReady={onReady} />
               ) : kind === 'blob' ? (
                 <BlobScene variant={variant} active={visible} lite={tier === 'lite'} reduced={reduced} onReady={onReady} />
               ) : (

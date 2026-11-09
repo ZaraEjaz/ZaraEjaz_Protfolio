@@ -170,89 +170,6 @@ html.motion [data-reveal='fade'] {
   opacity: 1;
 }
 
-/* ---------- 1. hero ---------- */
-
-.hero {
-  display: flex;
-  align-items: center;
-  min-height: 100vh;
-  min-height: 100svh;
-  padding-top: var(--nav-h);
-  padding-bottom: var(--s-7);
-}
-.hero-grid {
-  align-items: center;
-  row-gap: var(--s-6);
-}
-.hero-copy {
-  grid-column: 1 / span 5;
-  position: relative;
-  z-index: 1;
-}
-/* the stage takes the right half and bleeds to the viewport edge */
-.hero-stage {
-  --bleed: calc(max(0px, (100vw - var(--container)) / 2 - var(--gutter)) + var(--gutter));
-  grid-column: 6 / -1;
-  position: relative;
-  margin-right: calc(-1 * var(--bleed));
-  margin-left: calc(-1 * var(--s-6));
-}
-.hero-3d {
-  height: clamp(520px, 86vh, 880px);
-}
-.hero-3d-glow {
-  position: absolute;
-  inset: 15% 20%;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(var(--accent-rgb), 0.12), transparent);
-}
-.hero-label {
-  margin: 0 0 var(--s-5);
-  color: var(--fg-2);
-}
-.hero-name {
-  margin: 0 0 var(--s-3);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--h-hero);
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-.hero-title {
-  margin: 0 0 var(--s-5);
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: var(--h3);
-  color: var(--fg);
-}
-.hero-sub {
-  max-width: 46ch;
-  margin: 0 0 var(--s-6);
-  color: var(--fg-2);
-  font-size: var(--text-lg);
-  line-height: 1.6;
-}
-.hero-ctas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-3);
-  margin-bottom: var(--s-7);
-}
-.hero-now {
-  margin: 0;
-  color: var(--fg-3);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .hero-in {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  .hero-stage {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-}
-
 /* ---------- 2. about (bento) ---------- */
 
 .bento {
@@ -776,12 +693,6 @@ html.scroll-locked {
     grid-row: auto;
   }
 
-  .hero-copy {
-    grid-column: 1 / span 6;
-  }
-  .hero-stage {
-    grid-column: 7 / -1;
-  }
   .skill-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -791,23 +702,6 @@ html.scroll-locked {
 }
 
 @media (max-width: 900px) {
-
-  .hero {
-    align-items: flex-start;
-    padding-top: calc(var(--nav-h) + var(--s-4));
-  }
-  .hero-copy,
-  .hero-stage {
-    grid-column: 1 / -1;
-  }
-  .hero-stage {
-    grid-row: 1;
-    --bleed: var(--gutter);
-    margin-inline: calc(-1 * var(--gutter));
-  }
-  .hero-3d {
-    height: min(46svh, 420px);
-  }
 
   /* timeline: line on the left, every card on the right */
   .tl {
@@ -866,13 +760,6 @@ html.scroll-locked {
   }
   .card {
     padding: var(--s-5);
-  }
-  .hero-ctas .magnetic {
-    flex: 1 1 auto;
-  }
-  .hero-ctas .btn {
-    width: 100%;
-    justify-content: center;
   }
   .contact-actions {
     flex-direction: column;
@@ -1015,16 +902,6 @@ html.scroll-locked {
   .marquee-track {
     animation: none;
   }
-}
-
-/* ---------- hero extras ---------- */
-
-.hero-hint {
-  position: absolute;
-  right: var(--bleed, 0px);
-  bottom: 6%;
-  margin: 0;
-  color: var(--fg-3);
 }
 
 /* ---------- 3. journey (pinned 3D career path) ---------- */
@@ -1495,89 +1372,11 @@ html.scroll-locked {
   }
 }
 
-/* hero terminal pop-up */
-.term {
-  position: absolute;
-  left: 2%;
-  bottom: 14%;
-  min-width: 220px;
-  border: 1px solid var(--line-strong);
-  border-radius: 10px;
-  background: rgba(11, 19, 19, 0.92);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.8);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  opacity: 0;
-  transform: translateY(12px) scale(0.96);
-  transition:
-    opacity 0.4s var(--ease-out),
-    transform 0.5s var(--ease-out);
-  pointer-events: none;
-}
-.term.is-open {
-  opacity: 1;
-  transform: none;
-}
-.term-bar {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 7px 10px;
-  border-bottom: 1px solid var(--line);
-  color: var(--fg-3);
-}
-.term-bar i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #3c4a45;
-}
-.term-bar span {
-  margin-left: auto;
-  font-size: 0.625rem;
-}
-.term p {
-  margin: 0;
-  padding: 10px 12px 12px;
-  color: #d1e8e2;
-}
-.term-prompt {
-  color: #3fb8b0;
-}
-.term-ok {
-  color: #ffcb9a;
-}
-.term-caret {
-  display: inline-block;
-  width: 7px;
-  height: 13px;
-  margin-left: 2px;
-  vertical-align: -2px;
-  background: var(--accent);
-  animation: blink 1s steps(1) infinite;
-}
-@media (max-width: 900px) {
-  .term {
-    left: 0;
-    bottom: 4%;
-    min-width: 0;
-  }
-}
-/* soft edges so the desk scene never shows a hard clip */
-.hero-3d .lazy3d-canvas {
-  -webkit-mask-image: radial-gradient(ellipse 62% 60% at 56% 48%, #000 55%, transparent 100%);
-  mask-image: radial-gradient(ellipse 62% 60% at 56% 48%, #000 55%, transparent 100%);
-}
-
 /* ---------- soft background blobs (very low alpha; two hues only) ---------- */
-.section,
-.hero {
+.section {
   isolation: isolate;
 }
-.section::before,
-.hero::before {
+.section::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -1591,15 +1390,4 @@ main > section:nth-of-type(even)::before {
   background:
     radial-gradient(36% 30% at 10% 15%, rgba(var(--accent-2-rgb), 0.045), transparent 70%),
     radial-gradient(40% 34% at 92% 85%, rgba(var(--teal-rgb), 0.28), transparent 70%);
-}
-.hero::before {
-  background:
-    radial-gradient(48% 52% at 74% 48%, rgba(var(--teal-rgb), 0.42), transparent 70%),
-    radial-gradient(28% 30% at 80% 78%, rgba(var(--accent-2-rgb), 0.09), transparent 70%);
-}
-.hero {
-  position: relative;
-}
-.hero-3d-glow {
-  background: radial-gradient(closest-side, rgba(var(--teal-rgb), 0.5), transparent);
 }
