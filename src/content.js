@@ -259,6 +259,84 @@ export const journey = [
 // Facts: CV only, plus TRPL process details confirmed by Zara. No client names.
 // `stack` reuses the stop's CV stack (shown as icons at the end of the story).
 export const stories = {
+  bahria: {
+    chapters: [
+      {
+        id: 'b-start',
+        label: 'Enrolled',
+        title: 'Software Engineering at Bahria',
+        caption: 'In September 2022 I started a Bachelors in Software Engineering at Bahria University Karachi.',
+      },
+      {
+        id: 'b-overlap',
+        label: 'Study + work',
+        title: 'Studying while working',
+        caption: 'From January 2024 my degree ran alongside real jobs: Quantaflix, then Abidi Solutions, then TRPL Solutions.',
+      },
+      {
+        id: 'b-degree',
+        label: 'The degree',
+        title: 'The degree',
+        caption: 'A Bachelors in Software Engineering at Bahria University Karachi, from September 2022 to June 2026.',
+      },
+    ],
+  },
+  quantaflix: {
+    chapters: [
+      {
+        id: 'q-apps',
+        label: 'Full-stack apps',
+        title: 'Full-stack, end to end',
+        caption: 'I led full-stack development of dynamic, responsive web apps with React, Next.js, Node.js and Express.',
+      },
+      {
+        id: 'q-data',
+        label: 'APIs + MySQL',
+        title: 'Fast, data-backed apps',
+        caption: 'I optimized app performance by integrating RESTful APIs and managing scalable MySQL database operations.',
+      },
+      {
+        id: 'q-saas',
+        label: 'SaaS platform',
+        title: "The company's own products",
+        caption: "I played a pivotal role in building Quantaflix's proprietary products, including its SaaS platform.",
+      },
+      {
+        id: 'q-mentor',
+        label: 'Mentoring',
+        title: 'Growing the team',
+        caption: 'I mentored junior developers through code reviews and by promoting development best practices.',
+      },
+    ],
+  },
+  abidi: {
+    chapters: [
+      {
+        id: 'a-design',
+        label: 'Figma design',
+        title: 'Designed in Figma',
+        caption: 'I designed user-centric, interactive web interfaces in Figma.',
+      },
+      {
+        id: 'a-build',
+        label: 'Figma to code',
+        title: 'Pixel-perfect and responsive',
+        caption: 'I turned complex prototypes into pixel-perfect, responsive React and Next.js apps, styled with Tailwind CSS.',
+      },
+      {
+        id: 'a-state',
+        label: 'Redux + APIs',
+        title: 'State and data in sync',
+        caption: 'Redux handled state management, and API integrations kept data flowing in real time between frontend and backend.',
+      },
+      {
+        id: 'a-agile',
+        label: 'Agile teams',
+        title: 'Shipped as a team',
+        caption: 'I collaborated with cross-functional teams in an Agile environment to deliver multiple successful projects.',
+      },
+    ],
+  },
   trpl: {
     chapters: [
       {

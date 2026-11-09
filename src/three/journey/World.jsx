@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Billboard, RoundedBox, Sparkles, Text } from '@react-three/drei';
+import { Billboard, Sparkles, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { paintTubeGradient, PEACH, PLATINUM, TAN, TEAL, TEAL_HI } from '../palette';
 import monoFont from '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff?url';
@@ -329,62 +329,7 @@ function Building({ stop, index, data }) {
   );
 }
 
-/* -------------------------------------------------------------- tech tiles */
-
-/** Tiles rise out of the office, orbit her, then fly up to the on-screen inventory. */
-function Tiles({ index, avatar }) {
-  const stack = journey[index].stack;
-  const refs = useRef([]);
-  const tmp = useMemo(() => new THREE.Vector3(), []);
-  const home = useMemo(() => new THREE.Vector3(...STOPS[index].pos), [index]);
-
-  useFrame(({ clock, camera }) => {
-    const j = journeyAt(journeyState.p);
-    const active = j.stop === index && !j.walking ? j.dwell : -1;
-    const t = clock.elapsedTime;
-    stack.forEach((_, i) => {
-      const m = refs.current[i];
-      if (!m) return;
-      if (active < 0) {
-        m.visible = false;
-        return;
-      }
-      const delay = i * 0.03;
-      const rise = smooth(0.05 + delay, 0.3 + delay, active);
-      const collect = smooth(0.5 + delay, 0.68 + delay, active);
-      m.visible = collect < 0.999 && rise > 0.001;
-      if (!m.visible) return;
-      const a = (i / stack.length) * Math.PI * 2 + t * 0.8;
-      const r = 1.25;
-      const center = avatar.current.position;
-      // from the building → orbit around her
-      tmp.set(home.x, 0.4, home.z).lerp(
-        new THREE.Vector3(center.x + Math.cos(a) * r, 1.3 + Math.sin(a * 2) * 0.15, center.z + Math.sin(a) * r),
-        rise,
-      );
-      // → up and toward the camera (the inventory bar lives at the bottom of the screen)
-      if (collect > 0) tmp.lerp(camera.position, collect * 0.35).add(new THREE.Vector3(0, -collect * 2.2, 0));
-      m.position.copy(tmp);
-      m.scale.setScalar(Math.max(0.001, rise * (1 - collect * 0.8)));
-    });
-  });
-
-  return stack.map((label, i) => (
-    <Billboard key={label} ref={(el) => (refs.current[i] = el)} visible={false}>
-      <RoundedBox args={[0.98, 0.34, 0.08]} radius={0.06} smoothness={2}>
-        <meshStandardMaterial color="#172422" roughness={0.5} />
-      </RoundedBox>
-      <mesh position={[0, -0.15, 0.042]} material={M.teal}>
-        <planeGeometry args={[0.7, 0.014]} />
-      </mesh>
-      <Text font={monoFont} fontSize={0.13} color="#ededf0" position-z={0.05} anchorX="center" anchorY="middle">
-        {label}
-      </Text>
-    </Billboard>
-  ));
-}
-
-export default function World({ avatar, lite }) {
+export default function World({ lite }) {
   return (
     <group>
       <Ground lite={lite} />
@@ -394,7 +339,6 @@ export default function World({ avatar, lite }) {
       {STOPS.map((s, i) => (
         <Building key={s.id} stop={s} index={i} data={journey[i]} />
       ))}
-      {STOPS.map((s, i) => journey[i].stack.length > 0 && <Tiles key={s.id} index={i} avatar={avatar} />)}
     </group>
   );
 }

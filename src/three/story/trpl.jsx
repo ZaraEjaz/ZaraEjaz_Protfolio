@@ -1,109 +1,25 @@
 import { useMemo, useRef } from 'react';
-import { Billboard, RoundedBox, Text } from '@react-three/drei';
+import { Billboard, RoundedBox } from '@react-three/drei';
 import * as THREE from 'three';
-import monoFont from '@fontsource/jetbrains-mono/files/jetbrains-mono-latin-500-normal.woff?url';
 import Avatar from '../journey/Avatar';
 import Person from './Person';
 import { M } from './materials';
 import Enter from './Enter';
-import { clamp01, easeBack, easeInOut, easeOut, smooth, useChapterFrame } from './anim';
-import { blueprintTexture, bubbleTexture, noteTexture, pillTexture, specTexture, stampTexture, terminalTexture } from './textures';
-import { PEACH, PLATINUM } from '../palette';
+import { Arrow, Blueprint, Card, Chair, Label, Laptop, Note, Rack, Table, Pill } from './props';
+import { clamp01, easeBack, easeInOut, easeOut, smooth, useChapterFrame, useHer } from './anim';
+import { bubbleTexture, specTexture, stampTexture, terminalTexture } from './textures';
+import { PEACH } from '../palette';
 
 /*
  * TRPL story: seven chapters, one moment each. Coordinates are screen-aligned
  * (the scene rotates them to face the camera): +x right, +z toward the viewer, +y up.
  */
 
-const Label = ({ children, size = 0.14, color = PLATINUM, ...p }) => (
-  <Text font={monoFont} fontSize={size} color={color} anchorX="center" anchorY="middle" {...p}>
-    {children}
-  </Text>
-);
 
-const useHer = (pose) => useRef({ walking: false, wave: false, pose });
 
-/** Billboard plane with a texture (bubbles, cards, pills). */
-function Card({ map, w, h, ...p }) {
-  const mat = useMemo(() => new THREE.MeshBasicMaterial({ map, transparent: true, toneMapped: false, depthWrite: false }), [map]);
-  return (
-    <Billboard {...p}>
-      <mesh material={mat} renderOrder={10}>
-        <planeGeometry args={[w, h]} />
-      </mesh>
-    </Billboard>
-  );
-}
 
-/* ---------------------------------------------------------------- props */
 
-function Table({ w = 1.6, d = 0.95 }) {
-  return (
-    <group>
-      <RoundedBox args={[w, 0.07, d]} radius={0.03} position-y={0.75} material={M.wood} />
-      {[
-        [-1, -1],
-        [1, -1],
-        [-1, 1],
-        [1, 1],
-      ].map(([x, z]) => (
-        <mesh key={`${x}${z}`} material={M.woodDark} position={[x * (w / 2 - 0.1), 0.36, z * (d / 2 - 0.1)]}>
-          <cylinderGeometry args={[0.03, 0.03, 0.72, 8]} />
-        </mesh>
-      ))}
-    </group>
-  );
-}
 
-function Chair() {
-  return (
-    <group>
-      <RoundedBox args={[0.5, 0.06, 0.5]} radius={0.02} position-y={0.46} material={M.chair} />
-      <RoundedBox args={[0.5, 0.56, 0.06]} radius={0.02} position={[0, 0.77, -0.24]} material={M.chair} />
-      <mesh material={M.woodDark} position-y={0.22}>
-        <cylinderGeometry args={[0.035, 0.035, 0.44, 8]} />
-      </mesh>
-      <mesh material={M.woodDark} position-y={0.02}>
-        <cylinderGeometry args={[0.22, 0.22, 0.04, 16]} />
-      </mesh>
-    </group>
-  );
-}
-
-function Laptop({ screen = M.glow }) {
-  return (
-    <group>
-      <RoundedBox args={[0.5, 0.025, 0.34]} radius={0.01} position-y={0.0125} material={M.metal} />
-      <group position={[0, 0.02, -0.16]} rotation-x={-0.25}>
-        <RoundedBox args={[0.5, 0.32, 0.02]} radius={0.01} position-y={0.16} material={M.metal} />
-        <mesh material={screen} position={[0, 0.16, 0.012]}>
-          <planeGeometry args={[0.44, 0.26]} />
-        </mesh>
-      </group>
-    </group>
-  );
-}
-
-function Rack({ lit = 0.4 }) {
-  return (
-    <group>
-      <RoundedBox args={[0.8, 1.55, 0.7]} radius={0.05} position-y={0.775} material={M.rack} />
-      {[0.35, 0.65, 0.95, 1.25].map((y) => (
-        <group key={y} position={[0, y, 0.352]}>
-          <mesh material={M.rackPanel}>
-            <planeGeometry args={[0.66, 0.2]} />
-          </mesh>
-          <mesh material={lit > 0.5 ? M.glow : M.glowDim} position={[-0.2, 0, 0.002]}>
-            <planeGeometry args={[0.18, 0.035]} />
-          </mesh>
-          <mesh material={M.peachGlow} position={[0.24, 0, 0.002]}>
-            <circleGeometry args={[0.022, 12]} />
-          </mesh>
-        </group>
-      ))}
-    </group>
-  );
-}
 
 /* ------------------------------------------------- 1 · client meeting */
 
@@ -133,14 +49,6 @@ function Bubble({ kind, at, start }) {
   );
 }
 
-function Note({ kind, ...p }) {
-  const mat = useMemo(() => new THREE.MeshStandardMaterial({ map: noteTexture(kind), roughness: 0.9 }), [kind]);
-  return (
-    <mesh material={mat} rotation-x={-Math.PI / 2} {...p}>
-      <planeGeometry args={[0.3, 0.225]} />
-    </mesh>
-  );
-}
 
 export function Meeting() {
   const her = useHer('sit');
@@ -190,18 +98,6 @@ const NODE_W = 1.1;
 const FLY = (i) => 0.7 + i * 0.65; // note i leaves her hand
 const HER2 = { pos: [-2.55, 0, 0.55], yaw: Math.PI / 2 - 0.55 };
 
-function Blueprint({ children, x = 0.45 }) {
-  const mat = useMemo(() => new THREE.MeshBasicMaterial({ map: blueprintTexture(), toneMapped: false }), []);
-  return (
-    <group position-x={x}>
-      <RoundedBox args={[4.5, 0.08, 2.3]} radius={0.035} position-y={0.04} material={M.slab} />
-      <mesh material={mat} position-y={0.082} rotation-x={-Math.PI / 2}>
-        <planeGeometry args={[4.4, 2.2]} />
-      </mesh>
-      {children}
-    </group>
-  );
-}
 
 function FlyingNote({ kind, i, target }) {
   const ref = useRef();
@@ -225,39 +121,6 @@ function FlyingNote({ kind, i, target }) {
   );
 }
 
-function Arrow({ from, to, start, packets = false }) {
-  const bar = useRef();
-  const head = useRef();
-  const dot = useRef();
-  const len = to - from;
-  useChapterFrame(({ t, out, now }) => {
-    const g = easeInOut((t - start) / 0.5) * (1 - out);
-    bar.current.scale.x = Math.max(0.0001, g);
-    bar.current.position.x = from + (len * g) / 2;
-    head.current.position.x = from + len * g;
-    head.current.scale.setScalar(Math.max(0.0001, smooth(0.5, 1, g)));
-    if (dot.current) {
-      const f = (now * 0.7 + start) % 1;
-      dot.current.position.x = from + len * f;
-      dot.current.scale.setScalar(Math.max(0.0001, smooth(0, 0.6, (t - start - 1.2) / 1) * Math.sin(f * Math.PI) * (1 - out)));
-    }
-  });
-  return (
-    <group>
-      <mesh ref={bar} material={M.glow}>
-        <boxGeometry args={[len, 0.03, 0.03]} />
-      </mesh>
-      <mesh ref={head} material={M.glow} rotation-z={-Math.PI / 2}>
-        <coneGeometry args={[0.055, 0.12, 12]} />
-      </mesh>
-      {packets && (
-        <mesh ref={dot} material={M.peachGlow}>
-          <sphereGeometry args={[0.05, 12, 8]} />
-        </mesh>
-      )}
-    </group>
-  );
-}
 
 export function Requirements() {
   const her = useHer('point');
@@ -528,7 +391,7 @@ export function Agile() {
         <Person motion={client} shirt="#d9b08c" />
       </Enter>
       <group ref={review} position={[2.55, 2.55, 0.1]}>
-        <Card map={pillTexture('client review ✓')} w={1.45} h={0.285} />
+        <Pill text={'client review ✓'} h={0.285} />
       </group>
     </>
   );
@@ -669,7 +532,7 @@ export function Deploy() {
         </Billboard>
       </Enter>
       <group ref={online} position={[1.95, 2.2, -0.2]}>
-        <Card map={pillTexture('production: online')} w={1.6} h={0.314} />
+        <Pill text={'production: online'} h={0.314} />
       </group>
     </>
   );

@@ -67,15 +67,32 @@ export default function StoryOverlay({ stop, story, onClose }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [i, go, close]);
 
-  // cards: keep the index in sync with swiping
+  // cards: the current chapter is the card nearest the centre (several can be visible at once on wide screens)
   useEffect(() => {
-    if (use3D || !track.current) return;
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((en) => en.isIntersecting && setI(Number(en.target.dataset.index))),
-      { root: track.current, threshold: 0.6 },
-    );
-    [...track.current.children].forEach((c) => io.observe(c));
-    return () => io.disconnect();
+    const el = track.current;
+    if (use3D || !el) return;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const mid = el.scrollLeft + el.clientWidth / 2;
+        let best = 0;
+        let bestD = Infinity;
+        [...el.children].forEach((c, k) => {
+          const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid);
+          if (d < bestD) {
+            bestD = d;
+            best = k;
+          }
+        });
+        setI(best);
+      });
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      el.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
   }, [use3D]);
 
   const stack = (
@@ -127,7 +144,7 @@ export default function StoryOverlay({ stop, story, onClose }) {
             </p>
             <h3 className="story-title">{ch.title}</h3>
             <p className="story-text">{ch.caption}</p>
-            {last && stack}
+            {last && stop.stack.length > 0 && stack}
           </div>
         </div>
       ) : (
@@ -142,7 +159,7 @@ export default function StoryOverlay({ stop, story, onClose }) {
               </p>
               <h3 className="story-title">{c.title}</h3>
               <p className="story-text">{c.caption}</p>
-              {k === n - 1 && stack}
+              {k === n - 1 && stop.stack.length > 0 && stack}
             </li>
           ))}
         </ol>

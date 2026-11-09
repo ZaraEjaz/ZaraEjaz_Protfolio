@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 
 /**
@@ -40,3 +40,6 @@ export function useChapterFrame(fn) {
     fn({ t, out, now: state.clock.elapsedTime, delta, state });
   });
 }
+
+/** Motion ref for her avatar in a chapter (pose: 'sit' | 'point' | 'talk' | null). */
+export const useHer = (pose) => useRef({ walking: false, wave: false, pose });

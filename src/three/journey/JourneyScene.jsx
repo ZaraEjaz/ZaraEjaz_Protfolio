@@ -90,7 +90,7 @@ export default function JourneyScene({ active = true, lite = false, onReady }) {
         shadow-camera-bottom={-12}
       />
       <directionalLight position={[10, 9, -8]} intensity={1.1} color="#3fb8b0" />
-      <World avatar={avatar} lite={lite} />
+      <World lite={lite} />
       <Avatar ref={avatar} motion={motion} />
       <Director avatar={avatar} motion={motion} />
       <fog attach="fog" args={['#163735', 21, 46]} />

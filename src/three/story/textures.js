@@ -236,17 +236,21 @@ export const stampTexture = () =>
     return finish(c);
   });
 
-/** Small rounded pill with a status dot, e.g. "production: online". */
+/** Rounded pill with a status dot, sized to its text; aspect (w / h) is on texture.userData.aspect. */
 export const pillTexture = (text) =>
   once(`pill:${text}`, () => {
     const c = document.createElement('canvas');
-    c.width = 560;
-    c.height = 110;
     const g = c.getContext('2d');
+    const font = `600 40px ${MONO}`;
+    g.font = font;
+    const w = Math.ceil(g.measureText(text).width) + 150;
+    c.width = w;
+    c.height = 110;
+    g.font = font;
     g.fillStyle = 'rgba(23, 36, 35, 0.95)';
     g.strokeStyle = '#3fb8b0';
     g.lineWidth = 5;
-    roundRect(g, 6, 6, 548, 98, 49);
+    roundRect(g, 6, 6, w - 12, 98, 49);
     g.fill();
     g.stroke();
     g.fillStyle = '#3fb8b0';
@@ -254,10 +258,11 @@ export const pillTexture = (text) =>
     g.arc(62, 55, 15, 0, Math.PI * 2);
     g.fill();
     g.fillStyle = '#d1e8e2';
-    g.font = `600 40px ${MONO}`;
     g.textBaseline = 'middle';
     g.fillText(text, 100, 57);
-    return finish(c);
+    const t = finish(c);
+    t.userData.aspect = w / 110;
+    return t;
   });
 
 /** Terminal window whose lines can be revealed one by one: draw(n) shows the first n lines. */

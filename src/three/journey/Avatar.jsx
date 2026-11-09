@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 /**
- * Stylized low-poly "Zara": hijab, long modest dress, small backpack (her inventory).
+ * Stylized low-poly "Zara": hijab, long modest dress, small backpack.
  * Cute proportions, flat-shaded. Driven by a `motion` ref: { walking, wave, pose }.
  * pose (optional): 'sit' (lowered, hands on the table) | 'point' (right arm raised forward) | 'talk' (small gestures).
  * A GLB can replace this later with the same props.

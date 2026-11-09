@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import SectionHead from './SectionHead';
 import { ScrollTrigger } from '../lib/anim';
 import { useReducedMotion } from '../hooks/useMediaQuery';
@@ -60,17 +60,18 @@ export default function Journey() {
   const reduced = useReducedMotion();
   const tier = useDeviceTier();
   const [viewRef, seen, visible] = useInView({ rootMargin: '600px 0px' });
-  const [pinEl, setPinEl] = useState(null);
+  const pin = useRef(null);
   const [ready, setReady] = useState(false);
   const [view, setView] = useState({ stop: 0, walking: false, dwell: 0, key: '' });
   const [storyId, setStoryId] = useState(null);
   const animated = !reduced && tier !== 'static';
 
   useEffect(() => {
-    if (!animated || !pinEl) return;
+    // created in the same commit as later sections' triggers, so pins are measured top to bottom
+    if (!animated) return;
     journeyState.p = 0;
     const st = ScrollTrigger.create({
-      trigger: pinEl,
+      trigger: pin.current,
       start: 'top top',
       end: () => `+=${window.innerHeight * 5}`,
       pin: true,
@@ -86,7 +87,7 @@ export default function Journey() {
       },
     });
     return () => st.kill();
-  }, [animated, pinEl]);
+  }, [animated]);
 
   const stop = storyId && journey.find((s) => s.id === storyId);
   const overlay = stop && <StoryOverlay stop={stop} story={stories[storyId]} onClose={() => setStoryId(null)} />;
@@ -109,7 +110,7 @@ export default function Journey() {
 
   return (
     <section id="experience" data-section="experience" className="journey" aria-labelledby="exp-title" ref={viewRef}>
-      <div className="journey-pin" ref={setPinEl}>
+      <div className="journey-pin" ref={pin}>
         <div className={`journey-canvas ${ready ? 'is-ready' : ''}`} aria-hidden="true">
           {seen && (
             <Suspense fallback={null}>
@@ -128,14 +129,6 @@ export default function Journey() {
             </h2>
           </header>
 
-          <ol className="jr-rail" aria-label="Journey stops">
-            {journey.map((s, i) => (
-              <li key={s.id} className={i <= view.stop ? 'is-done' : ''}>
-                <span className="jr-rail-dot" />
-                <span className="mono">{s.place.split(' ')[0]}</span>
-              </li>
-            ))}
-          </ol>
 
           <div className="jr-card-slot">
             <StopCard key={current.id} stop={current} index={view.stop} visible={cardVisible} onStory={setStoryId} />
@@ -145,6 +138,15 @@ export default function Journey() {
               </p>
             )}
           </div>
+
+          <ol className="jr-rail" aria-label="Journey stops">
+            {journey.map((s, i) => (
+              <li key={s.id} className={i <= view.stop ? 'is-done' : ''}>
+                <span className="jr-rail-dot" />
+                <span className="mono">{s.place.split(' ')[0]}</span>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
       {overlay}
