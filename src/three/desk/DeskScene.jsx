@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import Adaptive from '../Adaptive';
+import { MAX_DPR, useQuality } from '../quality';
 import { Billboard, Environment, Lightformer, MeshReflectorMaterial, RoundedBox, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { BASE, gradientMaterial, PEACH, TEAL, TEAL_HI } from '../palette';
@@ -329,6 +331,9 @@ function OrbitIcons({ animate }) {
 /* ---------------------------------------------------------- composition */
 
 function Setup({ lite, animate }) {
+  // reflections + studio environment only once the device has shown it keeps up (see Adaptive)
+  const quality = useQuality();
+  const rich = !lite && quality === 'high';
   const root = useRef();
   const glow = useRef();
   const pressRef = useRef(() => {});
@@ -412,7 +417,7 @@ function Setup({ lite, animate }) {
       <directionalLight position={[4.5, 2, -3.5]} intensity={1.6} color={TEAL_HI} />
       <pointLight position={[-2.6, 0.6, 1.6]} color={TEAL} intensity={6} distance={6} decay={2} />
       <pointLight position={[2.4, 0.9, 1.4]} color={PEACH} intensity={1.2} distance={5} decay={2} />
-      {!lite && (
+      {rich && (
         // soft studio reflections on the metal + glossy desk (rendered once)
         <Environment resolution={128} frames={1}>
           <Lightformer form="rect" color={TEAL_HI} intensity={2.2} position={[-5, 2, -2]} rotation-y={Math.PI / 2} scale={[6, 3, 1]} />
@@ -423,7 +428,7 @@ function Setup({ lite, animate }) {
       <group ref={root}>
         {/* desk */}
         <RoundedBox args={[4.4, 0.1, 2.0]} radius={0.04} smoothness={2} material={M.desk} position={[0, -0.05, 0]} />
-        {!lite && (
+        {rich && (
           <mesh rotation-x={-Math.PI / 2} position-y={0.002}>
             <planeGeometry args={[4.3, 1.92]} />
             <MeshReflectorMaterial
@@ -470,13 +475,15 @@ export default function DeskScene({ active = true, lite = false, reduced = false
   const animate = !reduced;
   return (
     <Canvas
-      dpr={lite ? 1 : [1, 1.75]}
+      dpr={lite ? 1 : [1, MAX_DPR]}
       frameloop={!active ? 'never' : 'always'}
       camera={{ position: [0.2, 2.15, 6.9], fov: 32 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance', toneMappingExposure: 1.15 }}
       onCreated={() => requestAnimationFrame(() => onReady?.())}
     >
-      <Setup lite={lite} animate={animate} />
+      <Adaptive max={lite ? 1 : MAX_DPR}>
+        <Setup lite={lite} animate={animate} />
+      </Adaptive>
     </Canvas>
   );
 }

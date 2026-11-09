@@ -4,9 +4,10 @@ import { ScrollTrigger } from '../lib/anim';
 import { useReducedMotion } from '../hooks/useMediaQuery';
 import { useDeviceTier } from '../hooks/useDeviceTier';
 import { useInView } from '../hooks/useInView';
-import { journeyAt, journeyState } from '../three/journey/path';
+import { journeyPhase, journeyState } from '../three/journey/timing';
 import { journey, stories } from '../content';
 import StoryOverlay from '../ui/StoryOverlay';
+import SceneBoundary from '../ui/SceneBoundary';
 
 const JourneyScene = lazy(() => import('../three/journey/JourneyScene'));
 
@@ -79,7 +80,7 @@ export default function Journey() {
       anticipatePin: 1,
       onUpdate: (self) => {
         journeyState.p = self.progress;
-        const j = journeyAt(self.progress);
+        const j = journeyPhase(self.progress);
         // only re-render when something the HTML shows actually changes
         const shown = !j.walking && j.dwell > 0.12;
         const key = `${j.stop}|${j.walking}|${shown}`;
@@ -113,9 +114,11 @@ export default function Journey() {
       <div className="journey-pin" ref={pin}>
         <div className={`journey-canvas ${ready ? 'is-ready' : ''}`} aria-hidden="true">
           {seen && (
-            <Suspense fallback={null}>
-              <JourneyScene active={visible && !storyId} lite={tier === 'lite'} onReady={() => setReady(true)} />
-            </Suspense>
+            <SceneBoundary>
+              <Suspense fallback={null}>
+                <JourneyScene active={visible && !storyId} lite={tier === 'lite'} onReady={() => setReady(true)} />
+              </Suspense>
+            </SceneBoundary>
           )}
         </div>
 

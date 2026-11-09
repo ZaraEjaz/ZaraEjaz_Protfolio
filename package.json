@@ -13,7 +13,6 @@
     "@fontsource/jetbrains-mono": "^5.1.0",
     "@react-three/drei": "^9.114.0",
     "@react-three/fiber": "^8.17.10",
-    "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",
     "lenis": "^1.1.20",
     "react": "^18.3.1",

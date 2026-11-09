@@ -1448,18 +1448,36 @@ html.scroll-locked {
   border: 1px solid var(--line-strong);
   background: var(--surface);
 }
+/* bars grow with scaleY and glow via an overlay's opacity: no layout or paint per frame */
 .mp-bars i {
+  position: relative;
   width: 7px;
-  height: calc(var(--h) * 6px);
+  height: 54px; /* 9 steps × 6px; each bar is scaled down to its value */
   border-radius: 2px;
   background: #3c4a45;
+  transform-origin: bottom;
+  transform: scaleY(calc(var(--h) / 9));
   animation: mp-bar 2.4s ease-in-out infinite;
   animation-delay: calc(var(--i) * 0.18s);
 }
+.mp-bars i::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--accent-2);
+  opacity: 0;
+  animation: mp-bar-glow 2.4s ease-in-out infinite;
+  animation-delay: inherit;
+}
 @keyframes mp-bar {
   40% {
-    background: var(--accent-2);
-    height: calc((9 - var(--h)) * 6px);
+    transform: scaleY(calc((9 - var(--h)) / 9));
+  }
+}
+@keyframes mp-bar-glow {
+  40% {
+    opacity: 1;
   }
 }
 .wk-static .wk-panel {

@@ -81,19 +81,30 @@
   white-space: nowrap;
 }
 .nav-pulse {
+  position: relative;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.6);
+}
+/* the pulse ring scales + fades (compositor only) instead of animating box-shadow */
+.nav-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(var(--accent-rgb), 0.6);
   animation: pulse 2.4s infinite;
 }
 @keyframes pulse {
-  70% {
-    box-shadow: 0 0 0 8px rgba(var(--accent-rgb), 0);
+  0% {
+    transform: scale(1);
+    opacity: 1;
   }
+  70%,
   100% {
-    box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0);
+    transform: scale(3.67); /* 6px dot + 8px ring each side */
+    opacity: 0;
   }
 }
 

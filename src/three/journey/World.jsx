@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Billboard, Sparkles, Text } from '@react-three/drei';
 import * as THREE from 'three';
@@ -37,6 +37,33 @@ const smooth = (a, b, x) => {
 
 /* ------------------------------------------------------------------ ground */
 
+// shared geometries (pivot at the ground so instances only need position + scale)
+const G = {
+  trunk: new THREE.CylinderGeometry(0.05, 0.07, 0.4, 5).translate(0, 0.2, 0),
+  leaf: new THREE.ConeGeometry(0.32, 0.7, 6).translate(0, 0.62, 0),
+  rock: new THREE.DodecahedronGeometry(1, 0),
+};
+
+/** Static instanced mesh from [{ p, s, ry }]. */
+function Instanced({ items, geometry, material, castShadow = false }) {
+  const ref = useRef();
+  useLayoutEffect(() => {
+    const m = ref.current;
+    const o = new THREE.Object3D();
+    items.forEach((it, i) => {
+      o.position.set(...it.p);
+      o.rotation.set(0, it.ry ?? 0, 0);
+      o.scale.setScalar(it.s);
+      o.updateMatrix();
+      m.setMatrixAt(i, o.matrix);
+    });
+    m.count = items.length;
+    m.instanceMatrix.needsUpdate = true;
+    m.computeBoundingSphere();
+  }, [items]);
+  return <instancedMesh ref={ref} args={[geometry, material, Math.max(1, items.length)]} castShadow={castShadow} />;
+}
+
 function Ground({ lite }) {
   const trees = useMemo(() => {
     const r = (s) => {
@@ -57,6 +84,17 @@ function Ground({ lite }) {
     }
     return spots;
   }, [lite]);
+  const inst = useMemo(() => {
+    const out = { trunks: [], leavesA: [], leavesB: [], rocks: [] };
+    trees.forEach((t, i) => {
+      if (t.rock) out.rocks.push({ p: [t.x, 0.12 * t.s, t.z], s: t.s * 0.35, ry: i });
+      else {
+        out.trunks.push({ p: [t.x, 0, t.z], s: t.s });
+        (i % 2 ? out.leavesA : out.leavesB).push({ p: [t.x, 0, t.z], s: t.s });
+      }
+    });
+    return out;
+  }, [trees]);
 
   return (
     <group>
@@ -67,22 +105,11 @@ function Ground({ lite }) {
       <mesh material={M.groundEdge} position-y={-0.9}>
         <cylinderGeometry args={[17, 15.5, 0.8, 6]} />
       </mesh>
-      {trees.map((t, i) =>
-        t.rock ? (
-          <mesh key={i} material={M.rock} position={[t.x, 0.12 * t.s, t.z]} scale={t.s * 0.35} rotation-y={i}>
-            <dodecahedronGeometry args={[1, 0]} />
-          </mesh>
-        ) : (
-          <group key={i} position={[t.x, 0, t.z]} scale={t.s}>
-            <mesh material={M.trunk} position-y={0.2}>
-              <cylinderGeometry args={[0.05, 0.07, 0.4, 5]} />
-            </mesh>
-            <mesh material={i % 2 ? M.leaf : M.leafB} position-y={0.62} castShadow>
-              <coneGeometry args={[0.32, 0.7, 6]} />
-            </mesh>
-          </group>
-        ),
-      )}
+      {/* trees + rocks: one instanced draw per material instead of a mesh each */}
+      <Instanced items={inst.trunks} geometry={G.trunk} material={M.trunk} />
+      <Instanced items={inst.leavesA} geometry={G.leaf} material={M.leaf} castShadow />
+      <Instanced items={inst.leavesB} geometry={G.leaf} material={M.leafB} castShadow />
+      <Instanced items={inst.rocks} geometry={G.rock} material={M.rock} />
     </group>
   );
 }

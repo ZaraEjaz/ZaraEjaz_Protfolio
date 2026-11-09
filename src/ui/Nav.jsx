@@ -52,8 +52,11 @@ export default function Nav() {
   return (
     <header className={`nav ${scrolled ? 'is-scrolled' : ''} ${open ? 'is-open' : ''}`}>
       <div className="nav-inner shell">
-        <a href="#top" className="nav-logo" onClick={go} aria-label="Zara Ejaz — back to top">
-          ZE<span className="nav-logo-tick">_</span>
+        <a href="#top" className="nav-logo" onClick={go}>
+          <span aria-hidden="true">
+            ZE<span className="nav-logo-tick">_</span>
+          </span>
+          <span className="sr-only">Zara Ejaz, back to top</span>
         </a>
 
         <nav className="nav-links" aria-label="Primary">

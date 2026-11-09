@@ -4,6 +4,7 @@ import { handleAnchor } from '../lib/scroll';
 import { Reveal, Scramble } from '../ui/Reveal';
 import Magnetic from '../ui/Magnetic';
 import Lazy3D from '../ui/Lazy3D';
+import { useDeviceTier } from '../hooks/useDeviceTier';
 import { Arrow } from './icons';
 import Terminal from '../ui/Terminal';
 import { experience, profile } from '../content';
@@ -12,6 +13,8 @@ const current = experience[0];
 
 export default function Hero({ ready }) {
   const root = useRef(null);
+  // phones wait longer: the hero copy and first interaction come first, the desk fades in after
+  const tier = useDeviceTier();
 
   useEffect(() => {
     if (!ready || prefersReduced()) return;
@@ -64,7 +67,8 @@ export default function Hero({ ready }) {
         </div>
 
         <div className="hero-stage">
-          <Lazy3D kind="desk" className="hero-3d" fallback={<div className="hero-3d-glow" />} />
+          {/* the desk scene mounts once the intro has played, so it never competes with first paint */}
+          <Lazy3D kind="desk" className="hero-3d" delay={tier === 'lite' ? 3500 : 1400} after={ready} fallback={<div className="hero-3d-glow" />} />
           <Terminal />
           <p className="mono hero-hint" aria-hidden="true">
             {'// click the screen · click the lamp'}

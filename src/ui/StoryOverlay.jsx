@@ -6,6 +6,7 @@ import { useDeviceTier } from '../hooks/useDeviceTier';
 import TechIcon from './TechIcon';
 import { STORY_ART } from './storyArt';
 import './StoryOverlay.css';
+import SceneBoundary from './SceneBoundary';
 
 const StoryScene = lazy(() => import('../three/story/StoryScene'));
 const pad = (n) => String(n).padStart(2, '0');
@@ -47,9 +48,13 @@ export default function StoryOverlay({ stop, story, onClose }) {
 
   useEffect(() => {
     lockScroll();
+    // the page behind is inert while the dialog is open: no Tab focus or screen-reader access to it
+    const app = document.getElementById('root');
+    if (app) app.inert = true;
     const prev = document.activeElement;
     root.current?.focus(); // focus the dialog; rings appear only once the visitor tabs
     return () => {
+      if (app) app.inert = false;
       unlockScroll();
       prev?.focus?.();
     };
@@ -113,9 +118,11 @@ export default function StoryOverlay({ stop, story, onClose }) {
     <div ref={root} tabIndex={-1} className={`story ${closing ? 'is-closing' : ''} ${use3D ? 'is-3d' : 'is-cards'}`} role="dialog" aria-modal="true" aria-labelledby="story-title">
       {use3D && (
         <div className={`story-canvas ${ready ? 'is-ready' : ''}`} aria-hidden="true">
-          <Suspense fallback={null}>
-            <StoryScene storyId={stop.id} chapter={i} lite={tier === 'lite'} onReady={() => setReady(true)} />
-          </Suspense>
+          <SceneBoundary>
+            <Suspense fallback={null}>
+              <StoryScene storyId={stop.id} chapter={i} lite={tier === 'lite'} onReady={() => setReady(true)} />
+            </Suspense>
+          </SceneBoundary>
         </div>
       )}
 

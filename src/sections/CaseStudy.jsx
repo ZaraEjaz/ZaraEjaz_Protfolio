@@ -73,7 +73,16 @@ export default function CaseStudy({ project, index, onClose }) {
             {project.title}
           </h2>
           <p className="case-tagline">{project.tagline}</p>
-          <img className="case-shot" src={project.image} alt="" width="1280" height="720" />
+          <img
+            className="case-shot"
+            src={project.image}
+            srcSet={`${project.image.replace(/\.webp$/, '-640.webp')} 640w, ${project.image} 1280w`}
+            sizes="(max-width: 900px) 92vw, 800px"
+            alt={`Screenshot of ${project.title}`}
+            width="1280"
+            height="720"
+            decoding="async"
+          />
 
           <dl className="case-facts">
             {rows.map(([k, v]) => (

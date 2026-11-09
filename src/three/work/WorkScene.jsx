@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import Adaptive from '../Adaptive';
+import { MAX_DPR } from '../quality';
 import { Edges, Environment, Lightformer, RoundedBox, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { gradientMaterial, PEACH, TEAL_HI } from '../palette';
@@ -496,7 +498,7 @@ export default function WorkScene({ active = true, reduced = false, onReady }) {
   const animate = !reduced;
   return (
     <Canvas
-      dpr={[1, 1.75]}
+      dpr={[1, MAX_DPR]}
       frameloop={active ? 'always' : 'never'}
       camera={{ position: [0, 1.7, 9.0], fov: 36 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
@@ -505,6 +507,7 @@ export default function WorkScene({ active = true, reduced = false, onReady }) {
         requestAnimationFrame(() => onReady?.());
       }}
     >
+      <Adaptive />
       <hemisphereLight args={['#d1e8e2', '#0e1a1a', 0.9]} />
       <directionalLight position={[3, 5, 4]} intensity={1.8} />
       <pointLight position={[-3, 1.5, 2]} color={TEAL_HI} intensity={6} distance={7} decay={2} />

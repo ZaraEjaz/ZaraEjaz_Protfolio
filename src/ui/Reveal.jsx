@@ -13,6 +13,8 @@ const fontsReady = () => document.fonts?.ready ?? Promise.resolve();
  */
 export function Reveal({ as: Tag = 'h2', mode = 'words', start = 'top 85%', play, className, children, ...rest }) {
   const ref = useRef(null);
+  // aria-label is only allowed on headings here; a split <p> reads fine word by word, so leave it unlabelled
+  const aria = /^h[1-6]$/.test(Tag) ? 'auto' : 'none';
 
   useLayoutEffect(() => {
     if (prefersReduced()) return;
@@ -25,7 +27,7 @@ export function Reveal({ as: Tag = 'h2', mode = 'words', start = 'top 85%', play
     fontsReady().then(() => {
       if (cancelled) return;
       if (mode === 'assemble') {
-        split = SplitText.create(el, { type: 'chars', aria: 'auto' });
+        split = SplitText.create(el, { type: 'chars', aria });
         // gradient text survives splitting: each letter paints its own slice of one shared gradient
         el.querySelectorAll('.grad-text').forEach((span) => {
           const box = span.getBoundingClientRect();
@@ -52,7 +54,7 @@ export function Reveal({ as: Tag = 'h2', mode = 'words', start = 'top 85%', play
           filter: 'blur(6px)',
         });
       } else {
-        split = SplitText.create(el, { type: 'words', mask: 'words', aria: 'auto' });
+        split = SplitText.create(el, { type: 'words', mask: 'words', aria });
         gsap.set(split.words, { yPercent: 115 });
       }
       el.style.visibility = '';
@@ -85,7 +87,7 @@ export function Reveal({ as: Tag = 'h2', mode = 'words', start = 'top 85%', play
       }
       el.style.visibility = '';
     };
-  }, [mode, play, start]);
+  }, [aria, mode, play, start]);
 
   return (
     <Tag ref={ref} className={className} {...rest}>

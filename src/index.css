@@ -1,5 +1,5 @@
-@import '@fontsource/jetbrains-mono/400.css';
-@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/latin-400.css'; /* latin only: every glyph the site uses is in it or in no subset */
+@import '@fontsource/jetbrains-mono/latin-500.css';
 @import './styles/tokens.css';
 
 *,

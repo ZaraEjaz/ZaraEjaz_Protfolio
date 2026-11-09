@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { PEACH, TEAL_HI } from './palette';
 import { Canvas, useFrame } from '@react-three/fiber';
+import Adaptive from './Adaptive';
+import { MAX_DPR } from './quality';
 import { Edges, RoundedBox } from '@react-three/drei';
 import { pointer } from '../lib/pointer';
 
@@ -56,12 +58,13 @@ function Module({ animate }) {
 export default function ModuleAccent({ active = true, reduced = false, onReady }) {
   return (
     <Canvas
-      dpr={[1, 1.5]}
+      dpr={[1, MAX_DPR]}
       frameloop={!active ? 'never' : reduced ? 'demand' : 'always'}
       camera={{ position: [0, 0, 4.2], fov: 35 }}
       gl={{ antialias: true, alpha: true }}
       onCreated={() => requestAnimationFrame(() => onReady?.())}
     >
+      <Adaptive />
       <ambientLight intensity={0.5} />
       <spotLight position={[3, 4, 4]} angle={0.6} penumbra={0.8} intensity={30} />
       <pointLight position={[-2, -1, 2]} color={TEAL_HI} intensity={4} distance={6} decay={2} />

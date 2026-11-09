@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { PEACH, TEAL_HI } from './palette';
 import { Canvas, useFrame } from '@react-three/fiber';
+import Adaptive from './Adaptive';
+import { MAX_DPR } from './quality';
 import { Environment, Lightformer, MeshDistortMaterial, Sparkles } from '@react-three/drei';
 import { pointer } from '../lib/pointer';
 
@@ -85,12 +87,13 @@ export default function BlobScene({ variant = 'hero', active = true, lite = fals
   const hero = variant === 'hero';
   return (
     <Canvas
-      dpr={lite ? 1 : [1, 1.75]}
+      dpr={lite ? 1 : [1, MAX_DPR]}
       frameloop={!active ? 'never' : animate ? 'always' : 'demand'}
       camera={{ position: [0, 0, hero ? 6.4 : 6.6], fov: 35 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       onCreated={() => requestAnimationFrame(() => onReady?.())}
     >
+      <Adaptive max={lite ? 1 : MAX_DPR} />
       <ambientLight intensity={0.2} />
       <Studio />
       <Blob animate={animate} size={hero ? 1.15 : 1} />

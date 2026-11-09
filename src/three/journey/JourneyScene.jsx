@@ -1,5 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import Adaptive from '../Adaptive';
+import { MAX_DPR } from '../quality';
 import { OrthographicCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import Avatar from './Avatar';
@@ -70,11 +72,12 @@ export default function JourneyScene({ active = true, lite = false, onReady }) {
   return (
     <Canvas
       shadows={!lite}
-      dpr={lite ? 1 : [1, 1.75]}
+      dpr={lite ? 1 : [1, MAX_DPR]}
       frameloop={active ? 'always' : 'never'}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       onCreated={() => requestAnimationFrame(() => onReady?.())}
     >
+      <Adaptive max={lite ? 1 : MAX_DPR} />
       <OrthographicCamera makeDefault near={-50} far={200} position={[ISO.x, ISO.y, ISO.z]} zoom={60} />
       {/* teal dusk: cool sky fill, low warm sun, teal back light */}
       <hemisphereLight args={['#a6e0da', '#1d4542', 1.35]} />

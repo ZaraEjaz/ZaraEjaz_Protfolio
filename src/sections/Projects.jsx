@@ -9,6 +9,7 @@ import { useDeviceTier } from '../hooks/useDeviceTier';
 import { useInView } from '../hooks/useInView';
 import { workState } from '../three/work/workState';
 import { projects } from '../content';
+import SceneBoundary from '../ui/SceneBoundary';
 
 const WorkScene = lazy(() => import('../three/work/WorkScene'));
 const N = projects.length;
@@ -80,6 +81,9 @@ function MiniProps({ id }) {
   );
 }
 
+/** 640w variant for phones + the 1280w original (both WebP). */
+const screenSrcSet = (src) => `${src.replace(/\.webp$/, '-640.webp')} 640w, ${src} 1280w`;
+
 function StaticWork({ onOpen }) {
   return (
     <div className="wk-static">
@@ -87,7 +91,7 @@ function StaticWork({ onOpen }) {
         <article key={p.id} className="wk-static-item" data-reveal>
           <div className="laptop-mock">
             <div className="laptop-screen">
-              <img src={p.image} alt={`Screenshot of ${p.title}`} loading="lazy" decoding="async" />
+              <img src={p.image} srcSet={screenSrcSet(p.image)} sizes="(max-width: 900px) 92vw, 600px" alt={`Screenshot of ${p.title}`} width="1280" height="800" loading="lazy" decoding="async" />
             </div>
             <div className="laptop-base" />
             <MiniProps id={p.id} />
@@ -182,9 +186,11 @@ export default function Projects() {
         <div className="wk-pin" ref={pin}>
           <div className={`wk-canvas ${ready ? 'is-ready' : ''}`} aria-hidden="true">
             {seen && (
-              <Suspense fallback={null}>
-                <WorkScene active={visible} reduced={reduced} onReady={() => setReady(true)} />
-              </Suspense>
+              <SceneBoundary>
+                <Suspense fallback={null}>
+                  <WorkScene active={visible} reduced={reduced} onReady={() => setReady(true)} />
+                </Suspense>
+              </SceneBoundary>
             )}
           </div>
           <div className="container wk-ui">
@@ -207,7 +213,7 @@ export default function Projects() {
                       type="button"
                       className={i === current ? 'is-active' : ''}
                       onClick={() => goTo(i)}
-                      aria-label={`Go to ${p.title}`}
+                      aria-label={`${pad(i + 1)}: ${p.title}`}
                       aria-current={i === current ? 'true' : undefined}
                     >
                       {pad(i + 1)}

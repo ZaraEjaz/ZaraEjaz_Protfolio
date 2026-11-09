@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { journeyPhase, journeyState } from './timing';
 
 /**
  * World layout (units ≈ metres) and the scroll → journey mapping.
@@ -49,36 +50,11 @@ export const STOP_U = STOPS.map(({ door }) => {
   return best;
 });
 
-/**
- * Scroll progress p (0..1) is split into: dwell at stop 0, travel, dwell at stop 1, … dwell at stop 3.
- * Dwells are where things happen (lights, tiles, card); travels are the walk.
- */
-const DWELL = [0.07, 0.17, 0.17, 0.2]; // last stop lingers longer (wave + full inventory)
-const TRAVEL = 1 - DWELL.reduce((a, b) => a + b, 0);
-const TRAVEL_EACH = TRAVEL / (STOPS.length - 1);
-
-const SEGMENTS = [];
-{
-  let at = 0;
-  STOPS.forEach((_, i) => {
-    SEGMENTS.push({ kind: 'dwell', stop: i, from: at, to: (at += DWELL[i]) });
-    if (i < STOPS.length - 1) SEGMENTS.push({ kind: 'travel', stop: i, from: at, to: (at += TRAVEL_EACH) });
-  });
-}
-
-const easeInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
-
-/** → { u (curve position), stop (current/last stop index), dwell (0..1 or -1 while walking), walking } */
+/** Scroll timing + curve position: → { u, stop, dwell, walking } */
 export function journeyAt(p) {
-  const clamped = Math.min(1, Math.max(0, p));
-  const seg = SEGMENTS.find((s) => clamped <= s.to) ?? SEGMENTS[SEGMENTS.length - 1];
-  const local = (clamped - seg.from) / Math.max(1e-6, seg.to - seg.from);
-  if (seg.kind === 'dwell') {
-    return { u: STOP_U[seg.stop], stop: seg.stop, dwell: local, walking: false };
-  }
-  const t = easeInOut(local);
-  return { u: STOP_U[seg.stop] + (STOP_U[seg.stop + 1] - STOP_U[seg.stop]) * t, stop: seg.stop, dwell: -1, walking: true };
+  const j = journeyPhase(p);
+  const u = j.walking ? STOP_U[j.stop] + (STOP_U[j.stop + 1] - STOP_U[j.stop]) * j.travel : STOP_U[j.stop];
+  return { ...j, u };
 }
 
-/** Shared, mutable: written by ScrollTrigger, read every frame. */
-export const journeyState = { p: 0 };
+export { journeyState };

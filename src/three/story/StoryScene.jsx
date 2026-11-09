@@ -1,5 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import Adaptive from '../Adaptive';
+import { MAX_DPR } from '../quality';
 import { ContactShadows, OrthographicCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import { ChapterClock, EXIT, easeInOut } from './anim';
@@ -85,10 +87,11 @@ export default function StoryScene({ storyId, chapter, lite = false, onReady }) 
   const story = STORIES[storyId];
   return (
     <Canvas
-      dpr={lite ? 1 : [1, 2]}
+      dpr={lite ? 1 : [1, MAX_DPR]}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       onCreated={() => requestAnimationFrame(() => onReady?.())}
     >
+      <Adaptive max={lite ? 1 : MAX_DPR} />
       <OrthographicCamera makeDefault near={-50} far={200} zoom={60} />
       <hemisphereLight args={['#bfe8e2', '#1d4542', 1.5]} />
       <directionalLight position={[-6, 9, 8]} intensity={1.5} color="#ffd9b5" />
